@@ -1,0 +1,25 @@
+{
+  "bestBet": {
+    "title": "Enquiry assistant for villa bookings",
+    "whyItFits": "Your site lists 12 villas and you said answering enquiries takes most of your week.",
+    "moneyAngle": { "kind": "hours_saved", "detail": "About 10 hours a week of WhatsApp replies handled automatically." },
+    "size": "medium",
+    "timeline": "3–4 weeks"
+  },
+  "smallerIdeas": [
+    {
+      "title": "Multilingual villa descriptions",
+      "whyItFits": "Your listings are English-only but Ibiza guests come from Germany, Spain and Italy.",
+      "moneyAngle": { "kind": "more_revenue", "detail": "More direct bookings from non-English visitors." },
+      "size": "small",
+      "timeline": "1–2 weeks"
+    },
+    {
+      "title": "Lead qualification on the contact form",
+      "whyItFits": "You mentioned many enquiries ask about dates that are already booked.",
+      "moneyAngle": { "kind": "fewer_lost_sales", "detail": "Hot leads answered first instead of lost in the queue." },
+      "size": "small",
+      "timeline": "1 week"
+    }
+  ]
+}
