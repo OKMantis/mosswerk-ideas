@@ -62,15 +62,13 @@ export function checkUrl(raw: string): URL {
   return url;
 }
 
-type LookupCallback = (err: Error | null, address?: string | LookupAddress[], family?: number) => void;
-
 /** A `dns.lookup` replacement that refuses hostnames resolving to any non-public address. */
-export function makeSafeLookup(resolve: typeof dns.lookup = dns.lookup) {
-  return function safeLookup(hostname: string, options: LookupOptions, callback: LookupCallback): void {
-    resolve(hostname, { ...options, all: true }, (err, addresses) => {
-      if (err) return callback(err);
+export function makeSafeLookup(resolve: typeof dns.lookup = dns.lookup): net.LookupFunction {
+  return function safeLookup(hostname, options: LookupOptions, callback) {
+    resolve(hostname, { ...options, all: true }, (err, addresses: LookupAddress[]) => {
+      if (err) return callback(err, "");
       if (addresses.length === 0 || addresses.some((a) => isBlockedIp(a.address))) {
-        return callback(new GuardError(`${hostname} resolves to a private address`));
+        return callback(new GuardError(`${hostname} resolves to a private address`), "");
       }
       if (options.all) return callback(null, addresses);
       callback(null, addresses[0].address, addresses[0].family);
