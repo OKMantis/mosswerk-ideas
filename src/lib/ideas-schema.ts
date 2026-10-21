@@ -3,7 +3,10 @@ import { z } from "zod";
 
 export const Idea = z.object({
   title: z.string().min(1).describe("Short name for the feature"),
-  whyItFits: z.string().min(1).describe("Why it fits THIS business; cite something specific from their site or answers"),
+  whyItFits: z
+    .string()
+    .min(1)
+    .describe("One or two short sentences, under 40 words: why it fits THIS business, citing one specific thing from their site or answers"),
   moneyAngle: z.object({
     kind: z.enum(["fewer_lost_sales", "hours_saved", "more_revenue"]),
     detail: z.string().min(1).describe('One sentence, e.g. "About 10 hours a week of enquiry replies"'),
@@ -45,7 +48,15 @@ export const ideasTool: Anthropic.Tool = {
   input_schema: schema,
 };
 
+// The model occasionally double-escapes non-ASCII ("\\u20ac" instead of "€"), which would show up on the cards.
+function decodeEscapes(node: unknown): unknown {
+  if (typeof node === "string") return node.replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+  if (Array.isArray(node)) return node.map(decodeEscapes);
+  if (node === null || typeof node !== "object") return node;
+  return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, decodeEscapes(value)]));
+}
+
 export function parseIdeas(input: unknown): IdeasResult | null {
-  const parsed = IdeasResult.safeParse(input);
+  const parsed = IdeasResult.safeParse(decodeEscapes(input));
   return parsed.success ? parsed.data : null;
 }
