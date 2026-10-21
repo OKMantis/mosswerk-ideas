@@ -7,7 +7,7 @@ export function TypingDots({ label }: { label?: string }) {
         <span
           key={delay}
           aria-hidden
-          className={`size-2 animate-bounce rounded-full bg-current motion-reduce:animate-pulse ${delay}`}
+          className={`size-1.5 animate-bounce rounded-full bg-current motion-reduce:animate-pulse ${delay}`}
         />
       ))}
     </span>
