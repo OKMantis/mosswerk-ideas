@@ -23,6 +23,11 @@ describe("parseIdeas", () => {
     expect(parseIdeas({ ...sampleIdeas, bestBet: { ...sampleIdeas.bestBet, title: "" } })).toBeNull();
   });
 
+  it("decodes \\u escapes the model sometimes leaves in its text", () => {
+    const escaped = { ...sampleIdeas, bestBet: { ...sampleIdeas.bestBet, whyItFits: "Flats from \\u20ac185,000 in Santa Eul\\u00e0ria" } };
+    expect(parseIdeas(escaped)?.bestBet.whyItFits).toBe("Flats from €185,000 in Santa Eulària");
+  });
+
   it.each([undefined, "text", null])("rejects %s", (input) => expect(parseIdeas(input)).toBeNull());
 });
 
