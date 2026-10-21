@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TypingDots } from "./TypingDots";
 
 export function UrlForm({ busy, onSubmit }: { busy: boolean; onSubmit: (url: string) => void }) {
   const [url, setUrl] = useState("");
@@ -36,7 +37,13 @@ export function UrlForm({ busy, onSubmit }: { busy: boolean; onSubmit: (url: str
           disabled={busy}
           className="cursor-pointer rounded-md bg-accent px-5 py-3 font-semibold text-ink hover:bg-accent/90 disabled:cursor-wait disabled:opacity-60"
         >
-          {busy ? "Reading your site…" : "Get ideas"}
+          {busy ? (
+            <span className="inline-flex items-center gap-2">
+              Reading your site <TypingDots />
+            </span>
+          ) : (
+            "Get ideas"
+          )}
         </button>
       </div>
     </form>

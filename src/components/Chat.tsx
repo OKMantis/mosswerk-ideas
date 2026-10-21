@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MAX_QUESTIONS, type ChatMessage } from "@/lib/turns";
+import { TypingDots } from "./TypingDots";
 
 type Props = {
   history: ChatMessage[];
@@ -48,7 +49,13 @@ export function Chat({ history, streaming, busy, canRetry, onAnswer, onRetry, on
         ))}
         {busy && (
           <li>
-            <p className="whitespace-pre-wrap leading-relaxed">{streaming || <span className="text-muted">Thinking…</span>}</p>
+            {streaming ? (
+              <p className="whitespace-pre-wrap leading-relaxed">{streaming}</p>
+            ) : (
+              <span className="inline-flex rounded-xl bg-surface px-4 py-3 text-muted">
+                <TypingDots label="Thinking…" />
+              </span>
+            )}
           </li>
         )}
       </ol>
