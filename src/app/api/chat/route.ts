@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { ideasFormat, ideasTool, parseIdeas, type IdeasResult } from "@/lib/ideas-schema";
 import { buildMessages, systemPrompt } from "@/lib/prompt";
+import { readJsonBody } from "@/lib/read-json";
 import type { StreamEvent } from "@/lib/protocol";
 import { parseChatRequest, turnMode, type ChatMessage, type TurnMode } from "@/lib/turns";
 
@@ -48,7 +49,7 @@ function isQuestion(message: Anthropic.Message, mode: TurnMode): boolean {
 }
 
 export async function POST(request: Request) {
-  const chat = parseChatRequest(await request.json().catch(() => null));
+  const chat = parseChatRequest(await readJsonBody(request));
   if (!chat) return Response.json({ error: "bad_request" }, { status: 400 });
 
   const mode = turnMode(chat.history);
