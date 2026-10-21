@@ -32,3 +32,19 @@ test("founder gets three ideas after at most three questions", async ({ page }) 
   await expect(page.getByRole("link", { name: "mosswerk.com" })).toHaveAttribute("href", "https://mosswerk.com");
   await expect(page.getByLabel("Your answer")).toHaveCount(0);
 });
+
+test("a rate-limited founder sees a friendly message and can start over", async ({ page }) => {
+  await page.route("**/api/site", (route) => route.fulfill({ json: { text: "Casa Sol. Villa rentals in Ibiza." } }));
+  await page.route("**/api/chat", (route) => route.fulfill({ status: 429, body: "<html>Too Many Requests</html>" }));
+
+  await page.goto("/");
+  await page.getByLabel("Your website").fill("casasol.example");
+  await page.getByRole("button", { name: "Get ideas" }).click();
+
+  // Filtered by text: Next.js renders its own role="alert" route announcer.
+  const rateLimited = page.getByRole("alert").filter({ hasText: /give it a minute/i });
+  await expect(rateLimited).toBeVisible();
+  await page.getByRole("button", { name: "Start over" }).click();
+  await expect(page.getByLabel("Your website")).toBeVisible();
+  await expect(rateLimited).toHaveCount(0);
+});

@@ -78,6 +78,7 @@ export function IdeasApp() {
           canRetry={!busy && error !== null && history.at(-1)?.role !== "assistant"}
           onAnswer={answer}
           onRetry={() => void runTurn(site, history)}
+          onStartOver={startOver}
         />
       ) : (
         <UrlForm busy={busy} onSubmit={(url) => void start(url)} />

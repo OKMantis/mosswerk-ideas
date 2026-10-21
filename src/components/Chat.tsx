@@ -10,9 +10,10 @@ type Props = {
   canRetry: boolean;
   onAnswer: (answer: string) => void;
   onRetry: () => void;
+  onStartOver: () => void;
 };
 
-export function Chat({ history, streaming, busy, canRetry, onAnswer, onRetry }: Props) {
+export function Chat({ history, streaming, busy, canRetry, onAnswer, onRetry, onStartOver }: Props) {
   const [answer, setAnswer] = useState("");
   const questionsAsked = history.filter((m) => m.role === "assistant").length;
   const awaitingAnswer = !busy && history.at(-1)?.role === "assistant";
@@ -85,14 +86,21 @@ export function Chat({ history, streaming, busy, canRetry, onAnswer, onRetry }: 
         </form>
       )}
 
-      {canRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="cursor-pointer rounded-md border border-line px-4 py-2 font-medium hover:border-accent"
-        >
-          Try again
-        </button>
+      {!busy && (
+        <div className="flex flex-wrap gap-3">
+          {canRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="cursor-pointer rounded-md border border-line px-4 py-2 font-medium hover:border-accent"
+            >
+              Try again
+            </button>
+          )}
+          <button type="button" onClick={onStartOver} className="cursor-pointer px-1 py-2 text-sm text-muted hover:text-fg">
+            Start over
+          </button>
+        </div>
       )}
     </div>
   );
