@@ -35,6 +35,11 @@ describe("parseChatRequest", () => {
     ["garbage", "hello"],
   ])("rejects %s", (_name, body) => expect(parseChatRequest(body)).toBeNull());
 
+  it("trims a long assistant reply instead of rejecting the conversation", () => {
+    const parsed = parseChatRequest({ site: "x", history: [a("q".repeat(9_000)), u()] });
+    expect(parsed!.history[0].content).toHaveLength(2_000);
+  });
+
   it("trims an oversized site", () => {
     expect(parseChatRequest({ site: "x".repeat(50_000), history: [] })!.site).toHaveLength(SITE_TEXT_LIMIT);
   });

@@ -4,7 +4,8 @@ import { SITE_TEXT_LIMIT } from "./extract-text";
 export const MAX_QUESTIONS = 3;
 
 const ChatMessage = z.discriminatedUnion("role", [
-  z.object({ role: z.literal("assistant"), content: z.string().min(1).max(2_000) }),
+  // Trimmed, not rejected: a verbose model reply shouldn't dead-end the founder's conversation.
+  z.object({ role: z.literal("assistant"), content: z.string().min(1).transform((text) => text.slice(0, 2_000)) }),
   z.object({ role: z.literal("user"), content: z.string().min(1).max(1_000) }),
 ]);
 export type ChatMessage = z.infer<typeof ChatMessage>;
