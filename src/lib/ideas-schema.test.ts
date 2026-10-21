@@ -14,8 +14,9 @@ describe("parseIdeas", () => {
   });
 
   it("rejects a missing money angle", () => {
-    const { moneyAngle: _, ...bestBet } = sampleIdeas.bestBet;
-    expect(parseIdeas({ ...sampleIdeas, bestBet })).toBeNull();
+    const result = structuredClone(sampleIdeas) as { bestBet: Partial<typeof sampleIdeas.bestBet> };
+    delete result.bestBet.moneyAngle;
+    expect(parseIdeas(result)).toBeNull();
   });
 
   it("rejects an empty title", () => {
