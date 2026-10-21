@@ -20,3 +20,18 @@ it("decodes numeric entities and collapses whitespace", () => {
 it("caps output at the limit", () => {
   expect(extractText("<p>" + "a ".repeat(20_000) + "</p>")).toHaveLength(SITE_TEXT_LIMIT);
 });
+
+it.each(["<", "<title", "<!--", "<meta", "<head", "<script>"])(
+  "stays linear on 500 KB of unclosed %s",
+  (token) => {
+    const html = token.repeat(Math.ceil(500_000 / token.length));
+    const start = performance.now();
+    extractText(html);
+    expect(performance.now() - start).toBeLessThan(500);
+  },
+  60_000,
+);
+
+it("keeps text after an unclosed tag-like character", () => {
+  expect(extractText("<p>Price < 100 euros per night for our villas</p>")).toContain("Price");
+});
